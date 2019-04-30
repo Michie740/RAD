@@ -52,6 +52,7 @@ void loop() {
   }
   else{  
     digitalWrite(ledPin, HIGH);
+    Serial.write("2");
     pressureTimeElapsed = 0;
   }
 
@@ -59,6 +60,7 @@ void loop() {
   if (Serial.available() > 0){ // if there is data
     state = Serial.read();
   }
+ 
   char myString[] = '';
   double coordinates[4];
 
@@ -73,24 +75,18 @@ void loop() {
 
   if (dist(coordinates[0], coordinates[2], coordinates[1], coordinates[3]) <76.2){
     Serial.write("0");
-    delay(5000);
-    Serial.write("1");
   }
 }
-  if (state == 0){
-    digitalWrite(ledleft, LOW);
-    digitalWrite(ledright, LOW);
-    ledTimeElapsed = 0;
-    
-    //Serial.println("OFF"); // send back to phone
-  }
-  else if (state == '1'){
+ 
+  if (state == '1'){
     digitalWrite(ledright, LOW);
     digitalWrite(ledleft, HIGH);
     if (ledTimeElapsed > 2000){
       digitalWrite(ledleft, HIGH);
-      Serial.println("LEFT SIDE VIBRATE"); // send back to phone
-      state = 0;
+      Serial.write("1"); // send back to phone
+      digitalWrite(ledleft, LOW);
+      digitalWrite(ledright, LOW);
+      state = "";
       ledTimeElapsed = 0;
     }
   }  //works
@@ -100,8 +96,10 @@ void loop() {
     digitalWrite(ledright, HIGH);
     if (ledTimeElapsed > 2000){
       digitalWrite(ledright, HIGH);
-      Serial.println("RIGHT SIDE VIBRATE");
-      state = 0;
+      Serial.write("1"); // send back to phone
+      digitalWrite(ledleft, LOW);
+      digitalWrite(ledright, LOW);
+      state = "";
       ledTimeElapsed = 0;
   }
 
